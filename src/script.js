@@ -59,24 +59,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Inicialize o Shaka Player
-    const video = document.querySelector('#video');
+    const video = document.querySelector('video.js-player');
     const shakaPlayer = new shaka.Player(video);
 
     // Configuração do Cast
     shakaPlayer.configure({
         cast: {
-            receiverAppId: 'YOUR_APP_ID',
-            androidReceiverCompatible: true
+            receiverAppId: '233637DE', // Altere para o seu App ID do Google Cast
         }
     });
+
+    // Inicialize o Shaka Cast Proxy
+    const castProxy = new shaka.cast.CastProxy(video, shakaPlayer);
+    const localVideo = castProxy.getVideo();
+    const localPlayer = castProxy.getPlayer();
 
     // Adicione o botão de "Cast" ao Plyr
     const castButton = document.createElement('button');
     castButton.className = 'plyr__control';
     castButton.innerHTML = 'Cast';
     castButton.addEventListener('click', () => {
-        if (shakaPlayer.castReceiver) {
-            shakaPlayer.castReceiver.showCastDialog();
+        if (castProxy) {
+            castProxy.cast();
         } else {
             console.log('Cast not initialized');
         }
@@ -89,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Carregue a fonte de vídeo
-    shakaPlayer.load('https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4').then(() => {
+    localPlayer.load('https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4').then(() => {
         console.log('The video has now been loaded!');
     }).catch(error => {
         console.error('Error loading video:', error);
