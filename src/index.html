@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -42,42 +43,6 @@
   <script src="https://www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
   <script src="https://www.gstatic.com/cast/sdk/libs/cast_framework.js"></script>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const video = document.getElementById('video');
-      const player = new Plyr(video);
-
-      // Initialize Shaka Player
-      const shakaPlayer = new shaka.Player(video);
-      const ui = new shaka.ui.Overlay(shakaPlayer, video, video.parentElement);
-      ui.getControls();
-
-      // Cast configuration
-      shakaPlayer.addEventListener('caststatuschanged', (e) => {
-        const isCasting = e['newStatus']['connected'];
-        if (isCasting) {
-          console.log('Casting to Chromecast');
-        } else {
-          console.log('Stopped casting');
-        }
-      });
-
-      shakaPlayer.configure({
-        cast: {
-          appData: {
-            title: 'My Video',
-          },
-        },
-      });
-
-      // Load the video source
-      shakaPlayer.load('https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4').then(() => {
-        console.log('The video has now been loaded!');
-      }).catch(error => {
-        console.error('Error loading video:', error);
-      });
-    });
-  </script>
-
+  <script src="./script.js"></script>
 </body>
 </html>
