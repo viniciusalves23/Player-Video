@@ -1,14 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Video Player</title>
   <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/3.2.1/controls.css">
   <style>
-    .plyr__video-wrapper{
+    .plyr__video-wrapper {
       height: 100vh !important;
       width: 100% !important;
     }
@@ -16,29 +14,68 @@
 </head>
 
 <body style="margin: 0; padding: 0;">
-  
-  <video controls crossorigin playsinline data-poster="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.jpg" class="js-player">
+
+  <video id="video" controls crossorigin playsinline data-poster="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.jpg" class="js-player">
     <!-- Video files -->
     <source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4" size="576" />
     <source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-720p.mp4" type="video/mp4" size="720" />
     <source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4" type="video/mp4" size="1080" />
-  
+
     <!-- English subtitles -->
     <track kind="captions" label="English" src="./assets/media/View_From_A_Blue_Moon_Trailer-HD.en.vtt" srclang="en" default>
-    
+
     <!-- French subtitles -->
     <track kind="captions" label="French" src="./assets/media/View_From_A_Blue_Moon_Trailer-HD.fr.vtt" srclang="fr">
-    
+
     <!-- PT-BR subtitles -->
     <track kind="captions" label="Portuguese (Brazil)" src="./assets/media/View_From_A_Blue_Moon_Trailer-HD.pt-br.vtt" srclang="pt-br">
 
     <!-- Additional video sources (if any) -->
-     
+
   </video>
 
-<script src="./script.js"></script>
-<script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+  <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/3.2.1/shaka-player.compiled.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/3.2.1/shaka-player.ui.min.js"></script>
+  <script src="https://www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+  <script src="https://www.gstatic.com/cast/sdk/libs/cast_framework.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const video = document.getElementById('video');
+      const player = new Plyr(video);
+
+      // Initialize Shaka Player
+      const shakaPlayer = new shaka.Player(video);
+      const ui = new shaka.ui.Overlay(shakaPlayer, video, video.parentElement);
+      ui.getControls();
+
+      // Cast configuration
+      shakaPlayer.addEventListener('caststatuschanged', (e) => {
+        const isCasting = e['newStatus']['connected'];
+        if (isCasting) {
+          console.log('Casting to Chromecast');
+        } else {
+          console.log('Stopped casting');
+        }
+      });
+
+      shakaPlayer.configure({
+        cast: {
+          appData: {
+            title: 'My Video',
+          },
+        },
+      });
+
+      // Load the video source
+      shakaPlayer.load('https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4').then(() => {
+        console.log('The video has now been loaded!');
+      }).catch(error => {
+        console.error('Error loading video:', error);
+      });
+    });
+  </script>
 
 </body>
 </html>
-
