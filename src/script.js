@@ -70,13 +70,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const castButton = document.getElementById('castButton');
+    // Adicione o botão de "Cast" ao Plyr
+    const castButton = document.createElement('button');
+    castButton.className = 'plyr__control';
+    castButton.innerHTML = 'Cast';
     castButton.addEventListener('click', () => {
         if (shakaPlayer.castReceiver) {
             shakaPlayer.castReceiver.showCastDialog();
+        } else {
+            console.log('Cast not initialized');
         }
     });
 
+    // Adicione o botão de "Cast" aos controles do Plyr
+    const controlsContainer = document.querySelector('.plyr__controls');
+    if (controlsContainer) {
+        controlsContainer.appendChild(castButton);
+    }
+
+    // Carregue a fonte de vídeo
     shakaPlayer.load('https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4').then(() => {
         console.log('The video has now been loaded!');
     }).catch(error => {
