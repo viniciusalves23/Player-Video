@@ -1,26 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
     const controls = [
-        'play-large', // The large play button in the center
-        'restart', // Restart playback
-        'rewind', // Rewind by the seek time (default 10 seconds)
-        'play', // Play/pause playback
-        'fast-forward', // Fast forward by the seek time (default 10 seconds)
-        'progress', // The progress bar and scrubber for playback and buffering
-        'current-time', // The current time of playback
-        'duration', // The full duration of the media
-        'mute', // Toggle mute
-        'volume', // Volume control
-        'captions', // Toggle captions
-        'settings', // Settings menu
-        'pip', // Picture-in-picture (currently Safari only)
-        'airplay', // Airplay (currently Safari only)
-        'download', // Show a download button with a link to either the current source or a custom URL you specify in your options
-        'fullscreen',  // Toggle fullscreen
+        'play-large',
+        'restart',
+        'rewind',
+        'play',
+        'fast-forward',
+        'progress',
+        'current-time',
+        'duration',
+        'mute',
+        'volume',
+        'captions',
+        'settings',
+        'pip',
+        'airplay',
+        'download',
+        'fullscreen',
     ];
 
     const player = Plyr.setup('.js-player', {
         controls: controls,
-        tooltips: { // Ensure tooltips are enabled
+        tooltips: {
             controls: true,
             seek: true
         },
@@ -55,5 +55,36 @@ document.addEventListener('DOMContentLoaded', () => {
             quality: 'Quality',
             loop: 'Loop'
         }
+    });
+
+    // Inicialize o Shaka Player
+    const video = document.querySelector('#video');
+    const shakaPlayer = new shaka.Player(video);
+    const ui = new shaka.ui.Overlay(shakaPlayer, video, video.parentElement);
+    ui.getControls();
+
+    // Configuração do Cast
+    shakaPlayer.addEventListener('caststatuschanged', (e) => {
+        const isCasting = e['newStatus']['connected'];
+        if (isCasting) {
+            console.log('Casting to Chromecast');
+        } else {
+            console.log('Stopped casting');
+        }
+    });
+
+    shakaPlayer.configure({
+        cast: {
+            appData: {
+                title: 'My Video',
+            },
+        },
+    });
+
+    // Carregue a fonte de vídeo
+    shakaPlayer.load('https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4').then(() => {
+        console.log('The video has now been loaded!');
+    }).catch(error => {
+        console.error('Error loading video:', error);
     });
 });
