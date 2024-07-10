@@ -13,6 +13,10 @@
       height: 100vh !important;
       width: 100% !important;
     }
+    /* Hide the default Shaka Player UI */
+    .shaka-controls-container {
+      display: none;
+    }
   </style>
 </head>
 
@@ -43,6 +47,6 @@
   <script src="https://www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
   <script src="https://www.gstatic.com/cast/sdk/libs/cast_framework.js"></script>
 
-  <script src="./script.js"></script>
 </body>
+
 </html>
