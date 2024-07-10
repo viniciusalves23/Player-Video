@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     // Inicialize o Plyr
-    const player = Plyr.setup('.js-player', {
+    const player = new Plyr('.js-player', {
         controls: controls,
         tooltips: {
             controls: true,
@@ -61,28 +61,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicialize o Shaka Player
     const video = document.querySelector('#video');
     const shakaPlayer = new shaka.Player(video);
-    const ui = new shaka.ui.Overlay(shakaPlayer, video, video.parentElement);
-    ui.getControls();
 
     // Configuração do Cast
-    shakaPlayer.addEventListener('caststatuschanged', (e) => {
-        const isCasting = e['newStatus']['connected'];
-        if (isCasting) {
-            console.log('Casting to Chromecast');
-        } else {
-            console.log('Stopped casting');
+    shakaPlayer.configure({
+        cast: {
+            receiverAppId: 'YOUR_APP_ID',
+            androidReceiverCompatible: true
         }
     });
 
-    shakaPlayer.configure({
-        cast: {
-            appData: {
-                title: 'My Video',
-            },
-        },
+    const castButton = document.getElementById('castButton');
+    castButton.addEventListener('click', () => {
+        if (shakaPlayer.castReceiver) {
+            shakaPlayer.castReceiver.showCastDialog();
+        }
     });
 
-    // Carregue a fonte de vídeo
     shakaPlayer.load('https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4').then(() => {
         console.log('The video has now been loaded!');
     }).catch(error => {
