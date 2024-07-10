@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'fullscreen',
     ];
 
+    // Inicialize o Plyr
     const player = Plyr.setup('.js-player', {
         controls: controls,
         tooltips: {
